@@ -1,0 +1,71 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class LinkShortener {
+    private Map<String, String> shortToLongMap;
+    private Map<String, String> longToShortMap;
+    private Random random;
+    private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int SHORT_URL_LENGTH = 7;  
+
+    public LinkShortener() {
+        this.shortToLongMap = new HashMap<>();
+        this.longToShortMap = new HashMap<>();
+        this.random = new Random();
+    }
+
+    
+    public String shortenURL(String longUrl) {
+        if (longToShortMap.containsKey(longUrl)) {
+            return longToShortMap.get(longUrl);  
+        }
+
+        String shortUrl = generateShortURL();
+        shortToLongMap.put(shortUrl, longUrl);
+        longToShortMap.put(longUrl, shortUrl);
+        return shortUrl;
+    }
+
+   
+    public String expandURL(String shortUrl) {
+        if (shortToLongMap.containsKey(shortUrl)) {
+            return shortToLongMap.get(shortUrl);
+        } else {
+            return "Short URL does not exist in the system.";
+        }
+    }
+
+    
+    private String generateShortURL() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < SHORT_URL_LENGTH; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        LinkShortener linkShortener = new LinkShortener();
+
+        
+        String longUrl1 = "https://www.example.com/articles/how-to-use-java";
+        String longUrl2 = "https://www.example.com/products/java-programming-book";
+
+        String shortUrl1 = linkShortener.shortenURL(longUrl1);
+        String shortUrl2 = linkShortener.shortenURL(longUrl2);
+
+        System.out.println("Shortened URLs:");
+        System.out.println(shortUrl1);
+        System.out.println(shortUrl2);
+
+        
+        String expandedUrl1 = linkShortener.expandURL(shortUrl1);
+        String expandedUrl2 = linkShortener.expandURL(shortUrl2);
+
+        System.out.println("\nExpanded URLs:");
+        System.out.println(expandedUrl1);
+        System.out.println(expandedUrl2);
+    }
+}
